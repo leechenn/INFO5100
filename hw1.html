@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Homework1</title>
+
+</head>
+
+<body>
+   <p id="p1">Problem 1: Identify which of the following are valid Javascript types (i.e. can be returned as output from the typeof() function). For each valid type provide an example using console.log(typeof( ... )).<p>
+       function, boolean, number, object, undefined and string are valid javascript types</p>
+    <script>
+        var a=function f(){return function b(){return 3};}
+        console.log(typeof(a))//function
+        console.log(typeof(true))//boolean
+        console.log(typeof (32))//number
+        console.log(typeof('split'))//string
+        console.log(typeof(dece))//undefined
+        console.log(typeof([1,2,3]))//object
+      
+    </script>
+    </p>
+    <p id="p2">Problem 2: Each of the following expressions contains improper JSON: calling JSON.parse(...) will result in an error. For each example, describe the error and provide a fixed version. Use the JSON.parse function to demonstrate that it works. Some may contain more than one error.
+       <p>a: the key name should has double quotation<br> b: there should not have comment <br> c: should be comma between each brace, there should have bracket in the end of expression</p>
+        <script>
+            JSON.parse('{"name" : "Data-driven web applications"}')
+            JSON.parse('{  "number": 3300 }')
+            JSON.parse('[{ "name": "DDWA", "number": 3300 } ,{ "name": "Java", "number" : 2110 } ,{ "name": "Python", "number" :1110 }]')
+        </script>
+    </p>
+    <p id="p3">Problem 3: Write a JSON expression that represents a list. This list should contain at least three objects. Each object should have at least three properties. The value of one
+property should be a number, the value of another should be a boolean, and value of a third should be a list of strings. You may define the contents in any way you choose and add additional properties as long as we can easily verify that the required elements are present. <p>
+       JSON expression: [{"p1":7,"p2":true,"p3":["father","mother"]},{"p1":7,"p2":true,"p3":["father","mother"]},{"p1":7,"p2":true,"p3":["father","mother"]}]</p>
+        <script>
+            var obj= [{"p1":7,"p2":true,"p3":["father","mother"]},{"p1":7,"p2":true,"p3":["father","mother"]},{"p1":7,"p2":true,"p3":["father","mother"]}]
+            JSON.parse('[{"p1":7,"p2":true,"p3":["father","mother"]},{"p1":7,"p2":true,"p3":["father","mother"]},{"p1":7,"p2":true,"p3":["father","mother"]}]')
+        </script>
+    </p>
+<p id="p4">Problem 4: Describe, in your own words, the course policy on late and unreadable work outlined in the syllabus, which is linked from the course website. (10 pts)
+     <p>
+         If we do not submit our work by the deadline, or if we submit a work that is ubreadable, we will record a zero. In case that we will have interview in this semester, two lowest grade of our homework will be discarded but we are encouraged to submit as much as we can.  we should submit the correct file in the correct format which will give the convience for TA and ourselves.
+
+     </p>
+     
+     </p>
+</body>
+</html>
+
