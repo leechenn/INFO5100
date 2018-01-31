@@ -1,0 +1,128 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Homework2</title>
+</head>
+
+<body>
+<p id="p1">[Die simulator] Write a function called roll that returns a random value from [1, 2, 3, 4, 5, 6], with equal (uniform) probability. Run this function 10 times and display the results in the p tag for this problem. The function join on an array may be useful when displaying results. (20 pts)
+<p id="q1"></p>
+<script>
+	   var array=[1,2,3,4,5,6];
+       var roll=function(){
+		   var index=Math.floor(Math.random()*6);
+		   return array[index];
+	   }
+	   var newArray=[];
+		for(i=0;i<10;i++){
+			newArray[i]=roll();
+		}
+		document.getElementById("q1").innerHTML=newArray;
+		
+	   
+      
+    </script>
+</p>
+<p id="p2">[Weird die simulator] Write a function called diceFactory that takes one argument, an array called values, and returns a function. This returned function should work the same way as your roll() function, but return a uniform sample from the values array rather than digits from 1-6. Create a function lunch by calling diceFactory(["pizza", "burrito", "sushi"]). Run the lunch function 10 times and display the results in the p tag for this problem. (20 pts)
+<p id="q2"></p>
+<script>
+            var diceFactory = function(values){
+				return function(){
+					var index = Math.floor(Math.random()*values.length);
+					return values[index];
+				} 
+			}
+			var newRoll=diceFactory(["pizza","burrito","sushi"]);
+			for(i=0;i<10;i++){
+			newArray[i]=newRoll();
+		}
+			document.getElementById("q2").innerHTML=newArray;
+        </script>
+</p>
+<p id="p3">[Non-transitive dice generator] I recently got some fun conference swag: Bradley Efron's non-transitive dice. These are four six-sided dice that have the following face values:[1, 1, 1, 5, 5, 5] [0, 0, 4, 4, 4, 4] [3, 3, 3, 3, 3, 3] [2, 2, 2, 2, 6, 6]
+  We'll call these [green, blue, yellow, and orange] (visit my office to see why). Write a new dice-rolling function generator function called nonTransitiveFactory that returns a function that simulates one of these dice. The generator function should take one argument, a number from {0, 1, 2, 3}, that specifies which die to return. Use the generator function to create a dice-rolling function greenDie that samples from the green array. Use a for loop to run this function 10 times and display the results in the p tag for this problem. (20 pts)
+<p id="q3"> </p>
+<script>
+   var diceDic = [[1,1,1,5,5,5],[0,0,4,4,4,4],[3,3,3,3,3,3],[2,2,2,2,6,6]]; 
+   var nonTransitiveFactory = function(number){
+	   return function(){
+		   var len = diceDic[number].length;
+		   var index = Math.floor(Math.random()*len);
+		   return diceDic[number][index];
+	   }
+   }
+   var greenDie = nonTransitiveFactory(0);
+	   for(i=0;i<10;i++){
+			newArray[i]=greenDie();
+		}
+			document.getElementById("q3").innerHTML=newArray;
+   
+</script>
+</p>
+<p id="p4">[Rolling many times] Write a function called rollNTimes that takes three arguments, two dice-rolling functions (i.e. functions returned by your nonTransitiveFactory function) and a number n. It should "roll" the two dice n times and return the number of times the first function returned a value greater than the second function (ties don't count). Run this function 10 times with green and blue with n=100, and display the results in the p tag for this problem. (20 pts)
+<p id="q4"></p>
+<script>
+   var a = [];
+   var rollNTimes = function(f1,f2,number){
+	   var count=0;
+	   for(i=0;i<number;i++){
+		   
+		   if(f1()>f2()){
+			   count++;
+		   }
+	   }
+	   return count;
+	   
+   }
+   
+   for(j=0;j<10;j++){
+	 newArray[j]=rollNTimes(nonTransitiveFactory(0),nonTransitiveFactory(1),100);
+	     
+   }
+	document.getElementById("q4").innerHTML=newArray;
+			
+</script>
+</p>
+<p id="p5">[All pairs comparison] Now create a 4x4 table where each cell has a distinct id attribute (you can write it out explicitly or generate it automatically). Set the background color for each cell to be the color associated with the row of the table. For each possible pair of dice i, j, use the innerText property to set the value in the appropriate table cell to the result you get by calling rollNTimes with the appropriate functions, and with n=1000. It's ok to compare a die to itself and to display both symmetrical pairs. In the p tag for this problem describe why these are called non-transitive dice.<p>
+	This is called non-transitive dice because there is no strong or weak die, green 'beat' blue, blue 'beat' yellow, yellow 'beat' orange, the wining property is like a circle, like a game of 'rock, paper, scissors'.  So it is non-transitve dice.</p>
+<p id="q5">
+<table style="width:100%" border="black">
+  <tr id="row1" bgcolor="green">
+    <td id="gg"></td>
+    <td id="gb"></td>
+    <td id="gy"></td>
+    <td id="go"></td>
+  </tr>
+  <tr id="row2" bgcolor="blue">
+    <td id="bg"></td>
+    <td id="bb"></td>
+    <td id="by"></td>
+    <td id="bo"></td>
+  </tr>
+  <tr id="row3" bgcolor="yellow">
+    <td id="yg"></td>
+    <td id="yb"></td>
+    <td id="yy"></td>
+    <td id="yo"></td>
+  </tr>
+  <tr id="row4" bgcolor="orange">
+    <td id="og"></td>
+    <td id="ob"></td>
+    <td id="oy"></td>
+    <td id="oo"></td>
+  </tr>
+</table>
+</p>
+<script>
+	var colorArray = ["g","b","y","o"];
+  for(k=0;k<4;k++)
+	  for(j=0;j<4;j++)
+		   document.getElementById(colorArray[k]+colorArray[j]).innerText=rollNTimes(nonTransitiveFactory(k),nonTransitiveFactory(j),1000);
+	   
+   
+			
+</script>
+</p>
+</body>
+</html>
