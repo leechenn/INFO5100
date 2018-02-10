@@ -59,14 +59,14 @@ var svg = d3.select("svg");
 
 var yardsScale = d3.scaleLinear().domain([0,100]).range([100,200]);
 var driveScale = d3.scaleLinear().domain([0,superbowl.length - 1]).range([20, 380]);
-var teamScale = d3.scaleOrdinal().domain(["NE","PHL"]).range(["#CC122C","#004851"]); 
+var teamScale = d3.scaleOrdinal().domain(["NE","PHL"]).range(["#CC122C","#004851"]);
 
 // From https://teamcolorcodes.com
 // Patriots Red: #CC122C
 // Eagles Midnight Green: #004851
 
 
- 
+
 superbowl.forEach(function (d,i){
 	svg.append("line")
 	.attr("x1", yardsScale(0))
@@ -77,7 +77,7 @@ superbowl.forEach(function (d,i){
 	.style("stroke-width", 10);
 
 });
-
+console.log(yardsScale(-80));
 
 
 </script>
