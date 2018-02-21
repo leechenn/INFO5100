@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>scalePractice</title>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script> -->
+    <style>
+#svg1{
+  width:500px;
+  height:500px;
+  border:1px red solid;
+}
+    </style>
+  </head>
+  <body>
+    <svg id="svg1"></svg>
+    <script>
+data1=[{key:'p1',value:'f'},{key:'p2',value:'m'},{key:'p3',value:'g'}];
+data2=[2,3,4,5];
+data3=[{number:2},{number:4},{number:10}]
+familyData = data1.map(function(d){
+  var result={People:d.key};
+  if(d.value == 'f'){
+    result.role='father';
+  }
+  if(d.value == 'm'){
+    result.role='mother';
+  }
+  if(d.value == 'g'){
+    result.role='grandfather';
+  }
+  return result;
+});
+familyData2 = data1.map(function(d){
+  // var result={People:d.key};
+  var result={};
+  if(d.value == 'f'){
+    result.role='father';
+  }
+  if(d.value == 'm'){
+    result.role='mother';
+  }
+  if(d.value == 'g'){
+    result.role='grandfather';
+  }
+  return result;
+});
+mapData1 = data2.map(function(d){
+  // var result={People:d.key};
+  // var result={};
+  // result.result=d*2;
+  return d*2;
+});
+var data2Extent = d3.extent(data2,
+  function (d) { return d*2; }
+);
+    </script>
+  </body>
+</html>

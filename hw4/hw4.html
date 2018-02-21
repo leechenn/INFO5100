@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>hw4-ChenLi</title>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <style>
+    #svg1{
+      width:300px;
+      height:300px;
+      border: 1px black solid;
+    }
+    #svg3A{
+      width:400px;
+      height:400px;
+      border: 1px black solid;
+    }
+    svg{
+      display: block;
+    }
+
+    </style>
+  </head>
+  <body>
+    <p id="p1">1. In HW3 you recreated Fig. 2 from the Wickham reading using SVG elements. Now create the same plot again, but this time using d3 functions. First create x and y scale functions that map from data coordinates to SVG coordinates (10 pts). Add circles and rectangles, with positions given by the x and y scales. You don't need to use data() or enter() functions: it's fine if you do a separate command for each shape (10 pts). Add d3 axes, again using the x and y scale functions (10 pts). Now add an event listener that changes the color of a circles or rectangles to blue when it is clicked, using d3 selections (10 pts).</p>
+    <svg id="svg1"></svg>
+    <script id="script1">
+    var coordinateSet=[{x:25,y:11,shape:'c'},{x:0,y:0,shape:'c'},{x:75,y:53,shape:'s'},{x:200,y:300,shape:'s'}];
+    var xExtent=d3.extent(coordinateSet,function(d){
+      return d.x;
+    });
+    var yExtent=d3.extent(coordinateSet,function(d){
+      return d.y;
+    });
+    var xScale=d3.scaleLinear().domain(xExtent).range([50,250]);
+    var yScale=d3.scaleLinear().domain(yExtent).range([200,20]);
+    coordinateSet.forEach(function(coordinate){
+      if(coordinate.shape=='c'){
+      d3.select("#svg1").append("circle")
+      .attr("cx",xScale(coordinate.x))
+      .attr("cy",yScale(coordinate.y))
+      .attr("r",5);
+
+    }
+    else{
+      d3.select("#svg1").append("rect")
+      .attr("x",xScale(coordinate.x))
+      .attr("y",yScale(coordinate.y))
+      .attr("width",10)
+      .attr("height",10);
+
+    };
+    });
+    var xAxis=d3.axisBottom(xScale);
+    d3.select("#svg1").append("g")
+    .attr("transform","translate(0,200)")
+    .call(xAxis);
+    var yAxis=d3.axisLeft(yScale);
+    d3.select("#svg1").append("g")
+    .attr("transform","translate(50,0)")
+    .call(yAxis);
+    d3.selectAll('circle')
+    .on("click", function () { d3.select(this).style("fill","blue") });
+    d3.selectAll('rect')
+    .on("click", function () { d3.select(this).style("fill","blue") });
+    </script>
+    <p id="p2">2. In this problem we're going to plot some data about English word frequencies from Google Books. The file words.json contains a JSON block that defines an array of objects. Each object represents a word, sorted by the number of pages that contain at least one instance of the word. The most frequent word, "of", occurs 15 billion times. The 512th most frequent word, "middle", occurs 45 million times. Add appropriate d3 axes for each figure.</p>
+    <p id="B">B: This visualization is not useful because texts are too close with each other,this visualization can not tell the difference of each word</p>
+    <p id="C">C</p>
+    <p id="D">D</p>
+    <script id="script2">
+    var wordData;
+    d3.json("words.json",function(error,data){
+      wordData=data;
+    var svg = d3.select("#B").append("svg")
+      .attr("width",200)
+      .attr("height",200)
+      .attr("style","outline: thin solid black");
+      var rankExtent = d3.extent(wordData,function(w){
+        return w.rank;
+          });
+      var countExtent = d3.extent(wordData,function(w){
+        return w.count;
+          });
+      var rankScale = d3.scaleLinear().domain(rankExtent).range([20,180]);
+      var countScale = d3.scaleLinear().domain(countExtent).range([180,20]);
+      wordData.forEach(function(word){
+        svg.append("text")
+        .attr("x",rankScale(word.rank))
+        .attr("y",countScale(word.count))
+        .text(word.word)
+        .attr("font-size","10px")
+
+      });
+      var xAxis=d3.axisBottom(rankScale);
+      svg.append("g")
+      .attr("transform","translate(0,180)")
+      .call(xAxis);
+      var yAxis=d3.axisLeft(countScale);
+      svg.append("g")
+      .attr("transform","translate(20,0)")
+      .call(yAxis);
+      var svg2 = d3.select("#C").append("svg")
+        .attr("width",200)
+        .attr("height",200)
+        .attr("style","outline: thin solid black");
+        var rankExtent = d3.extent(wordData,function(w){
+          return Math.log(w.rank);
+            });
+        var countExtent = d3.extent(wordData,function(w){
+          return Math.log(w.count);
+            });
+        var rankScale = d3.scaleLinear().domain(rankExtent).range([20,180]);
+        var countScale = d3.scaleLinear().domain(countExtent).range([180,20]);
+        wordData.forEach(function(word){
+          svg2.append("text")
+          .attr("x",rankScale(Math.log(word.rank)))
+          .attr("y",countScale(Math.log(word.count)))
+          .text(word.word)
+          .attr("font-size","10px");
+          var xAxis=d3.axisBottom(rankScale);
+          svg2.append("g")
+          .attr("transform","translate(0,180)")
+          .call(xAxis);
+          var yAxis=d3.axisLeft(countScale);
+          svg2.append("g")
+          .attr("transform","translate(20,0)")
+          .call(yAxis);
+
+    });
+      var svg3 = d3.select("#D").append("svg")
+        .attr("width",200)
+        .attr("height",200)
+        .attr("style","outline: thin solid black");
+        var rankExtent = d3.extent(wordData,function(w){
+          return w.rank;
+            });
+        var countExtent = d3.extent(wordData,function(w){
+          return w.count;
+            });
+        var rankScale = d3.scaleLog().domain(rankExtent).range([20,180]);
+        var countScale = d3.scaleLog().domain(countExtent).range([180,20]);
+        wordData.forEach(function(word){
+          svg3.append("text")
+          .attr("x",rankScale(word.rank))
+          .attr("y",countScale(word.count))
+          .text(word.word)
+          .attr("font-size","10px")
+          var xAxis=d3.axisBottom(rankScale);
+          svg3.append("g")
+          .attr("transform","translate(0,180)")
+          .call(xAxis);
+          var yAxis=d3.axisLeft(countScale);
+          svg3.append("g")
+          .attr("transform","translate(20,0)")
+          .call(yAxis);
+
+    });
+  });
+    </script>
+    <p id="p3">3. Line plots. In this problem you will simulate projectile motion under the influence of gravity using a finite approximation, where we estimate a ski jumper's position every 0.2 seconds. (This method was the original use for the ENIAC electronic computer.) Physics review: keep track of the position (displacement), velocity, and acceleration for the x and y dimensions separately. The finished work should look similar to the diagram below.</p>
+    <p id="p3A">D:the speed I set are 16, 26, 36.<svg id="svg3A"></svg></p>
+    <script id="script3">
+    var xScale = d3.scaleLinear().domain([0,100]).range([50,350]);
+    var yScale = d3.scaleLinear().domain([0,-50]).range([100,250]);
+    d3.select("#svg3A").append("line")
+    .attr("x1",50).attr("y1",100)
+    .attr("x2",350).attr("y2",250)
+    .style("stroke-width",1).style("stroke","black");
+    var xAxis=d3.axisBottom(xScale);
+    d3.select("#svg3A").append("g")
+    .attr("transform","translate(0,100)")
+    .call(xAxis);
+    var yAxis=d3.axisLeft(yScale);
+    d3.select("#svg3A").append("g")
+    .attr("transform","translate(50,0)")
+    .call(yAxis);
+    var trajectory = function(initialVelocity,initialAngle,initialY){
+    var count=0;
+    var projectileArray=[];
+    var initialObject={"ground":0,"x":0,"y":initialY,"xVelocity":initialVelocity*Math.cos(initialAngle*Math.PI/180),"yVelocity":initialVelocity*Math.sin(initialAngle*Math.PI/180),"xAcceleration":0,"yAcceleration":-9.8/5};
+    projectileArray[count]=initialObject;
+    while(projectileArray[count].ground<projectileArray[count].y){
+
+      var yv=projectileArray[count].yVelocity+projectileArray[count].yAcceleration;
+      var xv=projectileArray[count].xVelocity;
+      var x=projectileArray[count].x+0.2*xv;
+      var y=projectileArray[count].y+0.2*yv;
+      var ground=x*(-0.5);
+      var xAcceleration=projectileArray[count].xAcceleration;
+      var yAcceleration=projectileArray[count].yAcceleration;
+      var newObject={"ground":ground,"x":x,"y":y,"xVelocity":xv,"yVelocity":yv,"xAcceleration":0,"yAcceleration":-9.8/5};
+      if(newObject.ground>newObject.y){
+      break;
+    }
+      count=count+1;
+      projectileArray[count]=newObject;
+
+    };
+    return projectileArray;
+
+    };
+    var plotTrajectory = function(dataArray){
+      var pathGenerator = d3.line()
+      .x(function (d) { return xScale(d.x); })
+      .y(function (d) { return yScale(d.y); });
+      var pathData = pathGenerator(dataArray);
+      d3.select("#svg3A").append('path')
+      .attr('d',pathData)
+      .attr('stroke','blue')
+      .attr('stroke-width','5px')
+      .attr('opacity','0.25')
+      .attr('fill','none');
+      d3.select("#svg3A").append("text")
+      .attr("x",xScale(dataArray[dataArray.length-1].x))
+      .attr("y",yScale(dataArray[dataArray.length-1].y))
+      .text(Math.round(dataArray[dataArray.length-1].x*100)/100)
+      .attr("font-size","10px")
+
+    };
+    plotTrajectory(trajectory(26,-7,1));
+    plotTrajectory(trajectory(36,-7,1));
+    plotTrajectory(trajectory(16,-7,1));
+    </script>
+
+
+
+
+</html>
