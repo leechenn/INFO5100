@@ -1,0 +1,244 @@
+<html>
+<head>
+<title>INFO 3300 - Data-driven Web Applications</title>
+<link href="https://fonts.googleapis.com/css?family=Merriweather" rel="stylesheet">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/default.min.css">
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+<style>
+body { font-family: 'Merriweather', Calibri, sans-serif; }
+svg { border: solid #ccc 1px; }
+rect.rect{
+  fill:#abdda4;
+}
+text.question{
+  fill:#abdda4;
+}
+#hsl{
+  width:500px;
+  height:500px;
+  border: 1px solid #ccc;
+}
+
+</style>
+</head>
+<body>
+<svg id="normal1"></svg>
+<svg id="normal2"></svg>
+<br/>
+<svg id="lognormal1"></svg>
+<svg id="lognormal2"></svg>
+<br/>
+<svg id="exponential1"></svg>
+<svg id="exponential2"></svg>
+<br/>
+<svg id="gumbel1"></svg>
+<svg id="gumbel2"></svg>
+<br/>
+<svg id="cauchy1"></svg>
+<svg id="cauchy2"></svg>
+<p><svg id="hsl"></svg><input id="hue" type="range" min="0" max=360 value="30"/>
+<input id="opacity" type="range" min="0" max="100" value="30"/></p>
+
+
+
+
+<script id="notes">
+
+var height = 300;
+var width = 500;
+var padding = 40;
+var bins;
+var xBands;
+
+
+
+
+var randomPoisson = function(rate) {
+  var x = Math.random();
+  var i = 0;
+  var threshold = Math.exp(-rate);
+  while (x > threshold) {
+    i++;
+    x -= threshold;
+    threshold *= rate / i;
+  }
+  return i;
+}
+
+var randomPoissons = function(n, rate) {
+  var samples = [];
+  for (var i = 0; i < n; i++) {
+    samples.push(randomPoisson(rate));
+  }
+  return samples;
+}
+function gaussian(){
+  var random=d3.randomNormal(0.0, 1.0);
+  return random();
+}
+function gaussian1000(){
+  var data=[];
+  for(var i=0;i<1000;i++){
+  data.push(gaussian()+1);
+}
+return data;
+}
+function lognormal1000(){
+  var data=[];
+  for(var i=0;i<1000;i++){
+  data.push(Math.exp(gaussian()));
+}
+return data;
+}
+function exponential1000(){
+  var data=[];
+  for(var i=0;i<1000;i++){
+  data.push(-Math.log(Math.random()));
+}
+return data;
+}
+function gumbel1000(){
+  var data=[];
+  for(var i=0;i<1000;i++){
+  data.push((-Math.log(-Math.log(Math.random())))*1.732455);
+}
+return data;
+}
+function cauchy1000(){
+  var data=[];
+  for(var i=0;i<1000;i++){
+  data.push(gaussian()/gaussian());
+}
+return data;
+}
+function plotHistogram(elementID,data){
+  var svg = d3.select(elementID)
+  .attr("width",width)
+  .attr("height",height);
+  svg.append("text").attr("class", "question")
+    .attr("x", width/2)
+    .attr("y", padding/2)
+    .text(elementID);
+  var xExtent = d3.extent(data,function(d){
+    return d;
+  });
+  var counter = d3.histogram()
+  .thresholds(50)
+  .domain(xExtent);
+  bins = counter(data);
+  xScale=d3.scaleLinear().domain(xExtent).range([padding, width-padding]);
+  xBands = d3.scaleBand()
+  .domain(bins.map(function (bin) {
+     return bin.x0;
+   }))
+  .range([padding, width-padding]);
+
+  var yScale = d3.scaleLinear()
+  .domain([0,
+    d3.max(bins, function (bin) {
+       return bin.length;
+     }) ])
+  .range([height - padding, padding]);
+
+    svg.selectAll("rect")
+    .data(bins)
+    .enter().append("rect")
+    .attr("class",  "rect" )
+    .attr("x", function(bin){return xScale(bin.x0)})
+    .attr("y", function(bin){return yScale(bin.length)})
+    .attr("width", xBands.bandwidth())
+    .attr("height", function(bin){return yScale(0)-yScale(bin.length)})
+    .style("opacity", 0.8);
+
+    var xAxis=d3.axisBottom(xScale);
+    svg.append("g")
+    .attr("transform","translate(0,"+(height-padding)+")")
+    .call(xAxis);
+    var yAxis=d3.axisLeft(yScale);
+    svg.append("g")
+    .attr("transform","translate("+padding+",0)")
+    .call(yAxis);
+}
+circleArray=[];
+for(var i=0;i<11;i++){
+  for(var j=0;j<11;j++){
+    var obj={"saturation":j*10,"lightness":i*10};
+    circleArray.push(obj);
+  }
+}
+function showCircles(hue,opacity){
+  var svg = d3.select("#hsl");
+  var circles = svg.selectAll("circle")
+  .data(circleArray);
+
+  circles.enter().append("circle")
+  .merge(circles)
+  .attr("cx",function(circle){return (circle.saturation/10)*40+20})
+  .attr("cy",function(circle){return (circle.lightness/10)*40+20})
+  .attr("stroke","#eeee")
+  .attr("r",20)
+  .attr("fill",function(circle){ return d3.hsl(hue,circle.saturation/100,circle.lightness/100,opacity/100)});
+}
+
+var hue = document.getElementById("hue");
+var opacity = document.getElementById("opacity")
+showCircles(40,30);
+hue.oninput = function () {
+  showCircles(hue.value,opacity.value);
+
+};
+opacity.oninput = function () {
+  showCircles(hue.value,opacity.value);
+};
+
+dataArray1=gaussian1000();
+plotHistogram("#normal1",dataArray1);
+dataArray2=[];
+for(var i=0;i<1000;i++){
+dataArray2.push(d3.mean(gaussian1000()));
+}
+plotHistogram("#normal2",dataArray2);
+dataArray3 = lognormal1000();
+plotHistogram("#lognormal1",dataArray3);
+dataArray4=[];
+for(var i=0;i<1000;i++){
+dataArray4.push(d3.mean(lognormal1000()));
+}
+plotHistogram("#lognormal2",dataArray4);
+dataArray5=exponential1000();
+plotHistogram("#exponential1",dataArray5);
+dataArray6=[];
+for(var i=0;i<1000;i++){
+dataArray6.push(d3.mean(exponential1000()));
+}
+plotHistogram("#exponential2",dataArray6);
+dataArray7=gumbel1000();
+plotHistogram("#gumbel1",dataArray7);
+dataArray8=[];
+for(var i=0;i<1000;i++){
+dataArray8.push(d3.mean(gumbel1000()));
+}
+plotHistogram("#gumbel2",dataArray8);
+dataArray9=cauchy1000();
+plotHistogram("#cauchy1",dataArray9);
+dataArray10=[];
+for(var i=0;i<1000;i++){
+dataArray10.push(d3.mean(cauchy1000()));
+}
+plotHistogram("#cauchy2",dataArray10);
+
+
+
+
+
+
+
+
+
+</script>
+
+
+
+</body>
+</html>

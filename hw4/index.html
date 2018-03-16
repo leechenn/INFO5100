@@ -4,6 +4,8 @@
     <meta charset="utf-8">
     <title>hw4-ChenLi</title>
     <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://d3js.org/topojson.v2.min.js"></script>
+
     <style>
     #svg1{
       width:300px;
@@ -17,7 +19,9 @@
     }
     svg{
       display: block;
+      border: 1px black solid;
     }
+
 
     </style>
   </head>
@@ -205,6 +209,9 @@
       .x(function (d) { return xScale(d.x); })
       .y(function (d) { return yScale(d.y); });
       var pathData = pathGenerator(dataArray);
+      var x=dataArray[dataArray.length-1].x;
+      var y=dataArray[dataArray.length-1].y;
+      var dis=Math.sqrt(Math.pow(x,2)+Math.pow(y-1,2));
       d3.select("#svg3A").append('path')
       .attr('d',pathData)
       .attr('stroke','blue')
@@ -214,16 +221,113 @@
       d3.select("#svg3A").append("text")
       .attr("x",xScale(dataArray[dataArray.length-1].x))
       .attr("y",yScale(dataArray[dataArray.length-1].y))
-      .text(Math.round(dataArray[dataArray.length-1].x*100)/100)
-      .attr("font-size","10px")
+      .text(dis)
+      .attr("font-size","10px");
 
     };
     plotTrajectory(trajectory(26,-7,1));
     plotTrajectory(trajectory(36,-7,1));
     plotTrajectory(trajectory(16,-7,1));
     </script>
+<p id="p4">4. Map yourself! Find the longitude and latitude coordinates of three places that have meaning to you. Two must be within 30 miles of each other, the third must be at least 1000 miles away. Use d3 to create a map of the world, the US, or any relevant continent or region (10 pts). Use the JSON geographic files included with the class notes on GitHub or find your own. Select a projection for the map. Consult the d3 documentation for options. If you choose, you may want to use one of the projections from the d3-geo-projection package, which will require an additional javascript library file, available at https://github.com/d3/d3-geo-projection/. Place colored circles on the map in the locations you selected. Add text labels describing the meaning of these places. For each location connect the circle to the text with a line. (10 pts)</p>
+<svg id="svg4" width="1200" height="600"></svg>
+<script id="script4">
+
+var svg = d3.select("#svg4");
+
+var projection = d3.geoEquirectangular().scale(75);
+var pathGenerator = d3.geoPath().projection(projection);
+
+var rawData;
+var countries;
+
+d3.json("world-50m.json", function (error, data) {
+  rawData = data;
+
+  console.log("Code in the call-back function is only executed when the data file loads.");
+
+  countries = topojson.feature(rawData, rawData.objects.countries);
+  showMap();
+});
+
+var interestingPoints = [[-76.480970,42.444952,"Gates Hall",[20,30]],[-76.485772,42.478340,"My Apartment: Lansing Wset",[20,40]],[119.42,32.44,"My Hometown Yang Zhou",[20,20]]];
+
+function showMap() {
+
+  projection.fitExtent([[0,0], [svg.attr("width"), svg.attr("height")]], countries);
 
 
+  pathGenerator = d3.geoPath().projection(projection);
+
+  var paths = svg.selectAll("path.country")
+  .data(countries.features);
+
+  paths = paths.enter().append("path")
+  .attr("class", "country").merge(paths);
+
+  paths.attr("d", function (country) {
+    return pathGenerator(country);
+  })
+  .attr("stroke","grey")
+
+
+  var circles = svg.selectAll("circle")
+  .data(interestingPoints);
+  var lines = svg.selectAll("circle")
+  .data(interestingPoints);
+  var texts = svg.selectAll("text")
+  .data(interestingPoints);
+
+  circles.exit().remove();
+  lines.exit().remove();
+  texts.exit().remove();
+
+  circles = circles.enter().append("circle")
+  .attr("r", 2).merge(circles);
+  lines = lines.enter().append("line").merge(lines);
+  texts = texts.enter().append("text").merge(texts);
+
+  circles
+  .attr("cx", function (d) {
+    return projection(d)[0];
+  })
+  .attr("cy", function (d) {
+    return projection(d)[1];
+  })
+  .attr("fill","red");
+
+  lines
+  .attr("x1", function (d) {
+    return projection(d)[0];
+  })
+  .attr("y1", function (d) {
+    return projection(d)[1];
+  })
+  .attr("x2", function (d) {
+    return projection(d)[0]+d[3][0];
+  })
+  .attr("y2", function (d) {
+    return projection(d)[1]+d[3][1];
+  })
+  .attr("stroke","blue");
+
+  texts
+  .attr("x", function (d) {
+    return projection(d)[0]+d[3][0];
+  })
+  .attr("y", function (d) {
+    return projection(d)[1]+d[3][1];
+  })
+  .style("font-size","10pt")
+  .text(function (d) {
+    return d[2];
+  });
+
+
+}
+
+
+</script>
 
 
 </html>
