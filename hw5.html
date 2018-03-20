@@ -23,27 +23,44 @@ text.question{
 </style>
 </head>
 <body>
+  <p >Question1: Distributions and histograms<br/>There's an important result in statistics called the central limit theorem. It says that, under fairly mild conditions, the mean of a random sample from a distribution behaves like a Gaussian random variable, even if the distribution you're sampling from behaves nothing like a Gaussian. We're going to see if this is true for a number of different probability distributions.</p>
 <svg id="normal1"></svg>
 <svg id="normal2"></svg>
+<p>the first svg "normal1" represents the normal distribution, the second svg "normal2" represents the mean of the normal distribution
+array. The shapes are almost the same, the mean of normal distribution array in the second is also like normal distribution, but the x-scale are different
+.  The second plot seems have shorter range for x-scale</p>
 <br/>
 <svg id="lognormal1"></svg>
 <svg id="lognormal2"></svg>
+<p>the first svg "lognormal1" represents the lognormal distribution, the second svg "lognormal2" represents the mean of the lognormal distribution
+array. The shapes are different, the mean of lognormal distribution array in the second is like normal distribution,the x-scale are different
+.  The second plot seems have shorter range for x-scale</p>
 <br/>
 <svg id="exponential1"></svg>
 <svg id="exponential2"></svg>
+<p>the first svg "exponential1" represents the exponential distribution, the second svg "exponential2" represents the mean of the exponential distribution
+array. The shapes are different, the mean of exponential distribution array in the second is like normal distribution,the x-scale are different
+.  The second plot seems have shorter range for x-scale</p>
 <br/>
 <svg id="gumbel1"></svg>
 <svg id="gumbel2"></svg>
+<p>the first svg "gumbel1" represents the gumbel distribution, the second svg "gumbel2" represents the mean of the gumbel distribution
+array. The shapes are different, the mean of gumbel distribution array in the second is like normal distribution,the x-scale are different
+.  The second plot seems have shorter range for x-scale</p>
 <br/>
 <svg id="cauchy1"></svg>
 <svg id="cauchy2"></svg>
+<p>the first svg "cauchy1" represents the cauchy distribution, the second svg "cauchy2" represents the mean of the cauchy distribution
+array. The shapes are almost the same, the mean of gumbel distribution array in the second is not like normal distribution,both x-scale are larger than the above plots
+</p>
+<p>Question2: HSLa Colors<br/>We're used to indexing colors with RGB values. We can also use Hue, Saturation, and Lightness. The CSS function hsla(h, s, l, a) defines a color based on hue (0-360), saturation, lightness, and alpha or opacity (all 0.0-1.0). Here we'll look at the differences between these and add some interactive effects.</p>
 <p><svg id="hsl"></svg><input id="hue" type="range" min="0" max=360 value="30"/>
 <input id="opacity" type="range" min="0" max="100" value="30"/></p>
 
 
 
 
-<script id="notes">
+<script id="hw5">
 
 var height = 300;
 var width = 500;
@@ -51,28 +68,6 @@ var padding = 40;
 var bins;
 var xBands;
 
-
-
-
-var randomPoisson = function(rate) {
-  var x = Math.random();
-  var i = 0;
-  var threshold = Math.exp(-rate);
-  while (x > threshold) {
-    i++;
-    x -= threshold;
-    threshold *= rate / i;
-  }
-  return i;
-}
-
-var randomPoissons = function(n, rate) {
-  var samples = [];
-  for (var i = 0; i < n; i++) {
-    samples.push(randomPoisson(rate));
-  }
-  return samples;
-}
 function gaussian(){
   var random=d3.randomNormal(0.0, 1.0);
   return random();
@@ -174,8 +169,8 @@ function showCircles(hue,opacity){
 
   circles.enter().append("circle")
   .merge(circles)
-  .attr("cx",function(circle){return (circle.saturation/10)*40+20})
-  .attr("cy",function(circle){return (circle.lightness/10)*40+20})
+  .attr("cx",function(circle){return (circle.saturation/10)*40+40})
+  .attr("cy",function(circle){return (circle.lightness/10)*40+40})
   .attr("stroke","#eeee")
   .attr("r",20)
   .attr("fill",function(circle){ return d3.hsl(hue,circle.saturation/100,circle.lightness/100,opacity/100)});
